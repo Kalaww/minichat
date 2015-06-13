@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="assets/acceuil.css">
+	<script type="text/javascript" src="assets/jquery.js"></script>
+	<script>
+
+		$(document).ready(
+			function(){
+				$("#note_soumettre").hide();
+
+				$("#note_soumettre").click(function(){
+					var note = $("#note_site").val();
+					$.get("/note/"+note, null, null);
+				});
+
+				$("#note_site").on("input", function(){
+					var note = parseInt($("#note_site").val());
+					if(note >= 1 && note <= 10)
+						$("#note_soumettre").show();
+					else
+						$("#note_soumettre").hide();
+				});
+
+				$("#note_moyenne").click(function(){
+					$.get("/moyenne", null, update_moyenne);
+				});
+			}
+		);
+
+		function update_moyenne(rep){
+			var table = $.parseJSON(rep);
+			$("#note_moyenne_result").html("");
+			$("#note_moyenne_result").html(table);
+		}
+	</script>
+	<title>Acceuil</title>
+</head>
+<body>
+	<header>
+		<a href="http://www.univ-paris-diderot.fr"><div id="logo"></div></a>
+		<h1>Chat des étudiants de L3 de Paris Diderot</h1>
+	</header>
+	<nav>
+		<ul>
+			<li><a href="http://www.univ-paris-diderot.fr">Université Paris Diderot</a></li>
+			<li><a href="http://didel.script.univ-paris-diderot.fr/">Didel</a></li>
+			<li><a href="/identification">Mini-chat</a></li>
+			<li><a href="/readme">Read me</a></li>
+		</ul>
+	</nav>
+
+	<div id="page">
+		<div id="server">
+			<img src="assets/nodejs.png" alt="NodeJS" height="100" width="100"></img>
+			<p>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eget turpis arcu. Cras sit amet rutrum dui. Nullam vel est maximus enim blandit condimentum. Quisque iaculis nunc magna, quis consequat lacus feugiat quis. Integer varius turpis risus, ac tempus odio laoreet eu. Interdum et malesuada fames ac ante ipsum primis in faucibus. Integer finibus lacus nec libero tincidunt, vitae ullamcorper neque lobortis. Vivamus at lacinia turpis. Integer volutpat tortor turpis, quis suscipit purus pharetra at. Pellentesque ut nulla ultrices, sodales purus sit amet, facilisis lectus. Morbi quis ipsum lacus.
+
+				Fusce ultrices, nisl eu ullamcorper molestie, magna mi tristique turpis, id posuere elit enim sed velit. Sed commodo euismod sapien. Nulla ullamcorper dolor eu eros euismod, quis interdum risus consectetur. Quisque vel lobortis dolor, eu porttitor tortor. Sed vehicula cursus tortor vel sodales. Sed ut turpis a turpis interdum ultrices sit amet malesuada leo. Donec sed mauris efficitur, porta arcu id, tristique nisi.
+			</p>
+		</div>
+
+		<div id="note">
+			<div class="note_row">
+				<label for="note_site">Mettez une note d'appréciation du site de 1 à 10</label>
+				<input type="text" name="note_site" id="note_site">
+				<button id="note_soumettre">Soumettre</button>
+			<div class="note_row">
+				<button id="note_moyenne">Moyenne</button>
+				<span id="note_moyenne_result"></span>
+			</div>
+		</div>
+	</div>
+
+	<footer>
+		<div>Cédric DESGRANGES</div>
+		<div>
+			<a href="mailto:desgrang@informatique.univ-paris-diderot.fr">desgrang@informatique.univ-paris-diderot.fr</a>
+		</div>
+	</footer>
+</body>
+</html>

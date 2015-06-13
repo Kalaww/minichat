@@ -1,0 +1,70 @@
+/*BODY*/
+body{
+	max-width: 1200px;
+	margin: auto;
+}
+
+
+/*PAGE*/
+#page{
+	margin-bottom: 100px;
+}
+
+/*LOGO*/
+#logo{
+	width: 1200px;
+	height: 300px;
+	background-image: url("/assets/logo.jpg");
+	background-size: 800px 300px;
+	background-repeat: no-repeat;
+	background-position: 200px top;
+}
+
+
+/*NAV*/
+nav{
+	float: left;
+	padding: 10px;
+	background-color: #ffffcc;
+	color: #3399ff;
+}
+
+nav ul{
+	list-style-type: none;
+	padding: 0px;
+}
+
+nav a{
+	color: #3399ff;
+}
+
+nav a:hover{
+	color: #0066cc;
+}
+
+
+/*SERVER*/
+#server{
+
+}
+
+#server img{
+	float: left;
+}
+
+
+/*NOTE*/
+#note{
+	margin: 20px auto;
+}
+
+
+/*FOOTER*/
+footer{
+	position: fixed;
+	bottom: 0px;
+	background-color: white;
+	z-index: 1000;
+	text-align: center;
+	width: 1200px;
+}

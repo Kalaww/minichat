@@ -1,0 +1,48 @@
+<div class="form_row">
+	<div class="erreur" id="err_signin_1">Il y a déjà 10 utilisateurs sur le chat</div>
+	<div class="erreur" id="err_signin_2">Le login existe déjà</div>
+	<div class="erreur" id="err_signin_3">Les mots de passe ne sont pas identiques</div>
+</div>
+<div id="sign_in_form">
+	<div class="form_row">
+		<label for="etat_civil">Etat civil</label>
+		<select name="etat_civil" id="etat_civil">
+			<option value="M">M</option>
+			<option value="Mme">Mme</option>
+		</select>
+	</div>
+	<div class="form_row required">
+		<label for="nom">Nom</label>
+		<input type="text" name="nom" id="nom">
+	</div>
+	<div class="form_row required">
+		<label for="prenom">Prenom</label>
+		<input type="text" name="prenom" id="prenom">
+	</div>
+	<div class="form_row">
+		<label for="nom_complet">Nom complet</label>
+		<input type="text" name="nom_complet" id="nom_complet" disabled>
+	</div>
+	<div class="form_row required">
+		<label for="nom_login">Nom de login</label>
+		<input type="text" name="nom_login" id="nom_login">
+	</div>
+	<div class="form_row required">
+		<label for="password">Mot de passe</label>
+		<input type="password" name="password" id="password">
+	</div>
+	<div class="form_row required">
+		<label for="password_c">Confirmation du mot de passe</label>
+		<input type="password" name="password_c" id="password_c">
+	</div>
+	<div class="form_row">
+		<label for="pass_show">Afficher mot de passe</label>
+		<input type="checkbox" name="pass_show" id="pass_show">
+	</div>
+	<div class="form_row">
+		<button id="sign_in_send">Envoyer</button>
+	</div>
+	<div class="form_row">
+		<button id="reset">Réinitialiser</button>
+	</div>
+</div>

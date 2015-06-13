@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<script type="text/javascript" src="assets/jquery.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+
+		
+
+	</script>
+	<style type="text/css">
+		body{
+			width: 1200px;
+			margin: 0px 10px;
+		}
+
+		header{
+			color: green;
+			margin: 20px auto;
+		}
+
+		.message{
+			border-bottom: 1px dotted #ccc;
+			margin: 5px 0px;
+			padding-bottom: 5px;
+		}
+	</style>
+	<title>Mini Chat</title>
+</head>
+<body>
+	<header>
+	Bienvenue sur la page de mini-chat <%=etat %> <%=nom %> <%=prenom %>
+	</header>
+	<div id="page">
+		<div id="div_connecte">
+			<button id="liste_connectes_button">Afficher la liste des utilisateurs connectés</button>
+			<ul>
+			</ul>
+		</div>
+		<div id="div_send">
+			<label for="send_message">Ecrivez ici votre message</label>
+			<input type="text" name="send_message" id="send_message">
+			<button id="send_button">Envoyer</button>
+		</div>
+		<div id="messages">
+
+		</div>
+	</div>
+	<div id="login" style="display: none;"><%= login %></div>
+</body>
+
+<script>
+
+	var socket = io.connect("http://localhost:8080", {query: "login="+$("#login").html()});
+
+	socket.on("message", function(message){
+		$("#messages").prepend("<div class='message'>"+message+"</div>");
+	});
+
+	var ul_show = false;
+
+	$(document).ready(function(){
+		$("#send_button").click(function(){
+			var message = $("#send_message").val();
+			message = $("#login").html()+": "+message;
+			$("#send_message").val("");
+
+			if(message){
+				socket.emit("message", message);
+			}
+		});
+
+		$("#liste_connectes_button").click(function(){
+			if(ul_show){
+				ul_show = false;
+				$("#div_connecte ul").html("");
+				$("#liste_connectes_button").html("Afficher la liste des utlisateurs connectés");
+			}else{
+				ul_show = true;
+				$("#liste_connectes_button").html("Cacher la liste des utilisateurs connectés");
+				$.get("/minichat/connectes", null, function(res){
+					var tab = $.parseJSON(res);
+					var ul = $("#div_connecte ul");
+					ul.html("");
+					$(tab).each(function(index, item){
+						ul.append($(document.createElement('li')).text(item))
+					});
+				});
+			}
+		});
+	});
+
+
+
+</script>
+</html>

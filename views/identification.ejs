@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<style type="text/css">
+
+		header{
+			position: absolute;
+			left: 10px;
+			top: 10px;
+			color: red;
+			text-transform: uppercase;
+		}
+
+		#page{
+			margin: auto;
+			margin-top: 50px;
+			width: 800px;
+		}
+
+		#log_in{
+			border-bottom: 1px solid red;
+			padding-bottom: 20px;
+			margin-bottom: 20px;
+		}
+
+		.form_row{
+			margin: 5px;
+		}
+
+		label{
+			display: inline-block;
+			width : 300px;
+			vertical-align: middle;
+		}
+
+		input{
+			display: inline-block;
+		}
+
+		.empty{
+			color: red;
+		}
+
+		.erreur{
+			color: white;
+			padding: 5px;
+			background-color: #ff9999;
+		}
+
+		.pass_c_empty{
+			color: purple;
+		}
+
+		.pass_show{
+			color: blue;
+		}
+	</style>
+	<script type="text/javascript" src="assets/jquery.js"></script>
+	<script>
+		$(document).ready(function(){
+			// animation du header
+			var w = $(window).width() - $("header").width() -20;
+			$("header").animate({left: "+="+w}, 2000);
+
+			// Activation du bouton de validation login
+			$("#login").on("input", update_login_button);
+			$("#login_password").on("input", update_login_button);
+
+			// Update du nom complet
+			$("#nom").on("input", update_nom_complet);
+			$("#prenom").on("input", update_nom_complet);
+			$("#etat_civil").on("input", update_nom_complet);
+
+			// Update des champs vides
+			$(".required input").each(function(){
+				is_empty($(this));
+				$(this).on("input blur", function(){
+					is_empty($(this));
+					signin_valid();
+				});
+			});
+			signin_valid();
+
+			// Update du mot de passe de confirmation
+			$("#password").on("input blur", function(){
+				update_password_c();
+			});
+			$("#password_c").on("input blur", function(){
+				update_password_c();
+			});
+			update_password_c();
+
+			// Update du afficher le mot de passe
+			$("#pass_show").change(show_passwords);
+
+			// Click sur s'inscrire
+			$("#sign_in_button").click(function(){
+				$("#sign_in_button").hide();
+				$("#sign_in_form").show();
+			});
+			$("#sign_in_form").hide();
+
+			// Reset
+			$("#reset").click(function(){
+				$("#nom").val("");
+				$("#prenom").val("");
+				$("#password").val("");
+				$("#password_c").val("");
+			});
+
+			// Log in
+			$("#log_in_send").click(function(){
+				log_in();
+			});
+
+			// Sign in
+			$("#sign_in_send").click(function(){
+				sign_in();
+			})
+
+			// Hide all error
+			$(".erreur").each(function(){
+				$(this).hide();
+			})
+		});
+
+		// Active ou desactive le boutton de login
+		function update_login_button(){
+			if($("#login").val().length > 0 && $("#login_password").val().length >0)
+				$("#log_in_send").removeAttr("disabled");
+			else
+				$("#log_in_send").attr("disabled", true);
+		}
+
+		// Met à jour le nom complet
+		function update_nom_complet(){
+			var nom = $("#nom").val();
+			var prenom = $("#prenom").val();
+			var etat = $("#etat_civil").val();
+
+			$("#nom_complet").val(etat+" "+prenom+" "+nom);
+		}
+
+		// Test si un champs est vide et lui attribut la class empty si oui
+		function is_empty(cible){
+			var label = $("label[for='"+cible.attr("id")+"']");
+
+			if(!cible.val())
+				label.addClass("empty");
+			else
+				label.removeClass("empty");
+		}
+
+		// Verifie le mot de passe de confirmation et met son label en violet s'il est bon
+		function update_password_c(){
+			var label = $("label[for='password_c']");
+			var p = $("#password");
+			var pc = $("#password_c");
+
+			if(pc.val() == "" || pc.val() != p.val())
+				label.addClass("pass_c_empty");
+			else
+				label.removeClass("pass_c_empty");
+		}
+
+		// Affiche ou non les mots de passe en clair
+		function show_passwords(){
+			var check = $("#pass_show");
+			var p = $("#password");
+			var pc = $("#password_c");
+
+			if(check.is(":checked")){
+				p.attr("type", "text");
+				pc.attr("type", "text");
+				p.addClass("pass_show");
+				pc.addClass("pass_show");
+			}else{
+				p.attr("type", "password");
+				pc.attr("type", "password");
+				p.removeClass("pass_show");
+				pc.removeClass("pass_show");
+			}
+		}
+
+		// Envoyer formulaire valide
+		function signin_valid(){
+			var ok = true;
+
+			if($("#password").val() != $("#password_c").val())
+				ok = false;
+
+			$(".required input").each(function(){
+				if(!$(this).val())
+					ok = false;
+			});
+
+			if(ok)
+				$("#sign_in_send").removeAttr("disabled");
+			else
+				$("#sign_in_send").attr("disabled", "true");
+		}
+
+		function redirection(login){
+			var form = $("<form action='/minichat' method='POST'><input type='hidden' name='llogin' value='"+login+"'></form>");
+			$("body").append(form);
+			$(form).submit();
+		}
+
+		// Envoyer log in
+		function log_in(){
+			$.ajax({
+				url: "/login",
+				type: "POST",
+				contentType: "application/json",
+				dataType: "json",
+				data: JSON.stringify({
+					login: $("#login").val(),
+					password: $("#login_password").val()
+				}),
+				success: function(data){
+					var i = parseInt(data);
+					if(i == 1)
+						$("#err_login_1").show();
+					if(i == 2)
+						$("#err_login_2").show();
+					if(i == 0)
+						redirection($("#login").val());
+				}
+			});
+		}
+
+		// Envoyer sing in
+		function sign_in(){
+			$.ajax({
+				url: "/signin",
+				type: "POST",
+				contentType: "application/json",
+				dataType: "json",
+				data: JSON.stringify({
+					login: $("#nom_login").val(),
+					nom: $("#nom").val(),
+					prenom: $("#prenom").val(),
+					etat_civil: $("#etat_civil").val(),
+					password: $("#password").val(),
+					password_c: $("#password_c").val()
+				}),
+				success: function(data){
+					var i = parseInt(data);
+					if(i == 1)
+						$("#err_signin_1").show();
+					if(i == 2)
+						$("#err_signin_2").show();
+					if(i == 3)
+						$("#err_signin_3").show();
+					if(i == 0)
+						redirection($("#nom_login").val());
+				}
+			});
+		}
+	</script>
+	<title>Identification</title>
+</head>
+<body>
+	<header>
+		Bienvenue sur page d'accès au mini-chat
+	</header>
+
+	<div id="page">
+		<div id="log_in">
+			<% include login.ejs %>
+		</div>
+		<div id="sign_in_button">
+			<button>S'inscrire</button>
+		</div>
+		<div id="sign_in">
+			<% include signin.ejs %>
+		</div>
+	</div>
+
+
+</body>
+</html>
